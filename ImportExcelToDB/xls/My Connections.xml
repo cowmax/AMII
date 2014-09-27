@@ -1,0 +1,28 @@
+<ToadStudio>
+  <FileVersion Encryption="3Des">3</FileVersion>
+  <ConnectionHierarchy>
+    <DbPlatform name="SQL Server">
+      <Path />
+      <Connections />
+      <Groups>
+        <Group name="AMII" description="">
+          <Path />
+          <Connections>
+            <Connection type="SqlServer" autoCommit="True">
+              <Path>SQL Server\AMII</Path>
+              <AutoConnect>False</AutoConnect>
+              <Database>Gwms_xw_test</Database>
+              <Host>MY-LAPTOP</Host>
+              <WinAuth>True</WinAuth>
+              <LastConnectionDate>2014-09-24T12:47:04.6325837</LastConnectionDate>
+              <EncryptConnection>False</EncryptConnection>
+              <NetworkPacketSize>4096</NetworkPacketSize>
+              <NetworkProtocol>Default</NetworkProtocol>
+            </Connection>
+          </Connections>
+          <Groups />
+        </Group>
+      </Groups>
+    </DbPlatform>
+  </ConnectionHierarchy>
+</ToadStudio>
