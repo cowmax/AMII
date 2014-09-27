@@ -58,19 +58,6 @@ namespace ImportExcelToDB
             etb.Close();
             
         }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            pmmaTableAdapter pmmaTblAdapter = new pmmaTableAdapter();
-            GwmsTestDataSet wmsDataSet = new GwmsTestDataSet();
-            GwmsTestDataSet.pmmaDataTable pmmaTable = new GwmsTestDataSet.pmmaDataTable();
-
-            int rowCount = pmmaTblAdapter.Fill(pmmaTable);
-
-            ExcelDb etb = new ExcelDb(pmmaTable);
-
-            etb.SaveToXls("D:\\百度云\\Project\\ImportExcelToDB\\ImportExcelToDB\\xls\\西伍商业决策分析系统_功能框架列表.xlsx", "dataTable");
-        }
     }
 
     class PvlgTable : GwmsTestDataSet.SystemUserPrivilegeDataTable

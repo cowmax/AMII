@@ -9,8 +9,6 @@ using System.Data.SqlClient;
 using System.Data.Common;
 using System.Web;
 using System.Web.UI;
-using Excel = Microsoft.Office.Interop.Excel;
-using System.IO;
 
 namespace ImportExcelToDB
 {
@@ -26,13 +24,6 @@ namespace ImportExcelToDB
         DataSet xlsDataSet = new DataSet(); // 用于保存 Excel/Sheet 数据的 DataSet 对像
         string xlsTableName;
 
-        public ExcelDb(DataTable dtTable)
-        {
-            this.xlsDataSet.Tables.Add(dtTable);
-            this.xlsTableName = dtTable.TableName;
-            this.strSheetName = dtTable.TableName;
-        }
-
         /// <summary>
         /// 构造函数：从Excel文件的指定Sheet 中加载数据到 DataSet 中
         /// </summary>
@@ -43,7 +34,6 @@ namespace ImportExcelToDB
         {
             LoadFromXls(xlsFilePath, strSheetName, srcTableName);
         }
-
         /// <summary>
         /// 构造函数：从Excel文件的指定Sheet 中加载数据到 DataSet 中
         /// </summary>
@@ -69,42 +59,6 @@ namespace ImportExcelToDB
             return this.Fill();
         }
 
-        private bool isSheetExist(Excel.Sheets sheets, string shtName)
-        {
-            bool bExist = false;
-            foreach (Excel.Worksheet sht in sheets)
-            {
-                if (sht.Name == shtName)
-                {
-                    bExist = true;
-                    break;
-                }
-            }
-
-            return bExist;
-        }
-
-        private Excel.Worksheet getSheet(Excel.Sheets sheets, string shtName, bool bCreate = false)
-        {
-            Excel.Worksheet sht = null;
-            foreach (Excel.Worksheet s in sheets)
-            {
-                if (s.Name == shtName)
-                {
-                    sht = s;
-                    break;
-                }
-            }
-
-            if (sht == null && bCreate)
-            {
-                sht = sheets.Add();
-                sht.Visible = Excel.XlSheetVisibility.xlSheetVisible;
-            }
-
-            return sht ;
-        }
-
         /// <summary>
         /// 函数：将DateSet 中的Table 保存到 Excel文件的 Sheet 中
         /// </summary>
@@ -112,56 +66,15 @@ namespace ImportExcelToDB
         /// <param name="xlsFilePath">Excel 文件路径</param>
         /// <param name="strSheetName">Excel 中 Sheet 的名称</param>
         /// <returns></returns>
-        public int SaveToXls(string xlsFilePath, string strSheetName)
+        public int SaveToXls(string srcTableName, string xlsFilePath, string strSheetName)
         {
-            DataTable dtTable = this.xlsDataSet.Tables[this.xlsTableName];
-            int rowCount = dtTable.Rows.Count;
-
-            // NOTE : Must Add reference Microsoft.Office.Interop.Excel assembly
-            Excel.Application xlsApp = new Excel.Application();
-            Excel.Workbook xlsWrkBook= xlsApp.Application.Workbooks.Open(xlsFilePath);
-            Excel.Worksheet wrkSheet = getSheet(xlsWrkBook.Sheets, this.xlsTableName, true);
-
-            wrkSheet.Visible = Excel.XlSheetVisibility.xlSheetVisible;
-            int rowIndex = 1;
-            int colIndex = 0;
-
-            // Fill table column name to work-sheet
-            foreach (DataColumn col in dtTable.Columns)
-            {
-                colIndex++;
-                wrkSheet.Cells[rowIndex, colIndex] = col.ColumnName;
-            }
-
-            // Fill data-row to work-sheet
-            foreach (DataRow row in dtTable.Rows)
-            {
-                rowIndex++;
-                colIndex = 0;
-                foreach (DataColumn col in dtTable.Columns)
-                {
-                    colIndex++;
-                    wrkSheet.Cells[rowIndex, colIndex] = "'" + row[col.ColumnName].ToString();
-                }
-            }
-
-            xlsApp.ActiveWorkbook.Save();
-            xlsApp.Quit();
-            xlsApp = null;
-            GC.Collect();//垃圾回收
+            int rowCount = 0;
 
             return rowCount;
         }
 
-        /// <summary>
-        /// 方法：将DateSet 的指定 Table 保存到 Excel 文件中
-        /// </summary>
-        /// <param name="ds"></param>
-        /// <param name="FileName"></param>
-        public void CreateExcel(DataSet ds, string tblName, string FileName)
+        public void CreateExcel(DataSet ds, string FileName)
         {
-            throw (new Exception("This method is not implemented."));
-
             Page pg = new Page();
             HttpResponse resp;
             resp = pg.Response;
@@ -170,7 +83,7 @@ namespace ImportExcelToDB
             string colHeaders = "", ls_item = "";
 
             //定义表对象与行对象，同时用DataSet对其值进行初始化 
-            DataTable dt = ds.Tables[tblName];
+            DataTable dt = ds.Tables[0];
             DataRow[] myRow = dt.Select();//可以类似dt.Select("id>10")之形式达到数据筛选目的
             int i = 0;
             int cl = dt.Columns.Count;
@@ -267,7 +180,7 @@ namespace ImportExcelToDB
             return this.xlsDbAdapter.Fill(trgDataSet, xlsTableName);
         }
 
-        public DataTable GetXlsDbTable()
+        private DataTable GetXlsDbTable()
         {
             return this.xlsDataSet.Tables[this.xlsTableName];
         }
