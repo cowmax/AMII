@@ -27,13 +27,15 @@ namespace ImportExcelToDB
 
         private void button1_Click(object sender, EventArgs e)
         {
-            ExcelDb etb = new ExcelDb("..\\..\\xls\\西伍商业决策分析系统_功能框架列表.xlsx", "系统用户权限分类", "srcTable");
+            ExcelDb etb = new ExcelDb("..\\..\\xls\\西伍商业决策分析系统_功能框架列表.xls", "系统用户权限分类", "srcTable");
+            etb.Open();
 
             DataTable srcTable = etb.GetXlsDbTable();
 
             dataGridView1.DataSource = srcTable;
 
-            // Save to DB's table
+            // Save Excel file's sheet to DB's corresponding table
+            // NOTE: the table must have same data-structure as excel file's table
             SystemUserPrivilegeTableAdapter pvlgTAdapter = new SystemUserPrivilegeTableAdapter();
             GwmsTestDataSet dtSet = new GwmsTestDataSet();
 
@@ -57,6 +59,19 @@ namespace ImportExcelToDB
 
             etb.Close();
             
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            pmmaTableAdapter pmmaTblAdapter = new pmmaTableAdapter();
+            GwmsTestDataSet wmsDataSet = new GwmsTestDataSet();
+            GwmsTestDataSet.pmmaDataTable pmmaTable = new GwmsTestDataSet.pmmaDataTable();
+
+            int rowCount = pmmaTblAdapter.Fill(pmmaTable);
+
+            ExcelDb etb = new ExcelDb(pmmaTable);
+
+            etb.SaveToXlsFile("D:\\百度云\\Project\\ImportExcelToDB\\ImportExcelToDB\\xls\\西伍商业决策分析系统_功能框架列表.xls", "dataTable");
         }
     }
 
