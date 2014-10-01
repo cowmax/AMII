@@ -62,7 +62,7 @@ namespace ImportExcelToDB
 
             ExcelDb etb = new ExcelDb(pmmaTable);
 
-            etb.Export(xlsFilePath, "Test");
+            etb.SaveToXlsFile(xlsFilePath, "Test");
 
             // etb.SaveToXlsFile(xlsFilePath, "dataTable");
         }
@@ -78,6 +78,20 @@ namespace ImportExcelToDB
             ExcelDb etb = new ExcelDb(pmmaTable);
 
             etb.SaveToXls("D:\\百度云\\Project\\ImportExcelToDB\\ImportExcelToDB\\xls\\西伍商业决策分析系统_功能框架列表.xls", "dataTable");
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+
+
+            
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            string templateFolder = "..\\..\\Templates";
+            TemplateManager tmplMgr = new TemplateManager(templateFolder);
+
         }
     }
 

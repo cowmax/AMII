@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ImportExcelToDB.ExcelDb" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>BIIiAAFABICAIAIABAACBAAAAAAQChAAAAEAAACAgAA=</HashCode>
+      <FileName>ExcelDb.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ImportExcelToDB.TemplateManager">
+    <Position X="1" Y="1.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAIAAAAAAABAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>TemplateManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Templates" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ImportExcelToDB.TemplateInfo">
+    <Position X="1" Y="4.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAABAAgA=</HashCode>
+      <FileName>TemplateManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ImportExcelToDB.TemplateCollection">
+    <Position X="4.25" Y="4.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAACAAAAAAAAAAAAAEAAAAAAEAAAAAIAAA=</HashCode>
+      <FileName>TemplateManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Items" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Font Name="Microsoft YaHei UI" Size="9" />
+</ClassDiagram>
