@@ -19,46 +19,35 @@ namespace ImportExcelToDB
             InitializeComponent();
         }
 
-        int AddToDb()
-        {
-            return 0;
-        }
-
-
         private void button1_Click(object sender, EventArgs e)
         {
-            ExcelDb etb = new ExcelDb("..\\..\\xls\\西伍商业决策分析系统_功能框架列表.xls", "系统用户权限分类", "srcTable");
-            etb.Open();
+            // 1. 初始化 ExcelDb 实例：指定Excel 文件路径、Sheet 的名称
+            ExcelDb etb = new ExcelDb("..\\..\\xls\\西伍商业决策分析系统_功能框架列表.xls", "系统用户权限分类");
 
-            DataTable srcTable = etb.GetXlsDbTable();
+            // 2. 初始化完成后，ExcelDb 已经将 Excel 文件 的 Sheet 中的数据加载到 DataTable 里
+            DataTable srcTable = etb.GetOleDbTable();
 
-            dataGridView1.DataSource = srcTable;
+            dataGridView1.DataSource = srcTable; // 在 DataGridView 中显示 DataTable 数据
 
-            // Save Excel file's sheet to DB's corresponding table
-            // NOTE: the table must have same data-structure as excel file's table
-            SystemUserPrivilegeTableAdapter pvlgTAdapter = new SystemUserPrivilegeTableAdapter();
-            GwmsTestDataSet dtSet = new GwmsTestDataSet();
+            // 3. 把 DataTable 数据保存到数据库中
+            SystemUserPrivilegeTableAdapter trgDbAdapter = new SystemUserPrivilegeTableAdapter();
+            GwmsTestDataSet.SystemUserPrivilegeDataTable trgTable = new GwmsTestDataSet.SystemUserPrivilegeDataTable();
 
-            GwmsTestDataSet.SystemUserPrivilegeDataTable pvlgTable = new GwmsTestDataSet.SystemUserPrivilegeDataTable();
-            GwmsTestDataSet.SystemUserPrivilegeRow pvlgRow = null;
-
-            foreach (DataRow r in srcTable.Rows)
+            // -- 逐行逐列复制数据
+            foreach (DataRow srcRow in srcTable.Rows)
             {
-                pvlgRow = pvlgTable.NewSystemUserPrivilegeRow();
-
-                // set each field value
-                foreach (DataColumn col in pvlgTable.Columns)
+                DataRow tmpRow = trgTable.NewRow();
+                foreach (DataColumn col in trgTable.Columns)
                 {
-                    pvlgRow[col.Caption] = r[col.Caption];
+                    tmpRow[col.ColumnName] = srcRow[col.ColumnName];
                 }
-
-                pvlgTable.AddSystemUserPrivilegeRow(pvlgRow);
+                trgTable.Rows.Add(tmpRow);
             }
 
-            pvlgTAdapter.Update(pvlgTable);
+            // -- 提交到数据库
+            int eftRow = trgDbAdapter.Update(trgTable);
 
             etb.Close();
-            
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -69,9 +58,26 @@ namespace ImportExcelToDB
 
             int rowCount = pmmaTblAdapter.Fill(pmmaTable);
 
+            string xlsFilePath = "D:\\百度云\\Project\\ImportExcelToDB\\ImportExcelToDB\\xls\\西伍商业决策分析系统_功能框架列表.xls";
+
             ExcelDb etb = new ExcelDb(pmmaTable);
 
-            etb.SaveToXlsFile("D:\\百度云\\Project\\ImportExcelToDB\\ImportExcelToDB\\xls\\西伍商业决策分析系统_功能框架列表.xls", "dataTable");
+            etb.Export(xlsFilePath, "Test");
+
+            // etb.SaveToXlsFile(xlsFilePath, "dataTable");
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            pmmaTableAdapter pmmaTblAdapter = new pmmaTableAdapter();
+            GwmsTestDataSet wmsDataSet = new GwmsTestDataSet();
+            GwmsTestDataSet.pmmaDataTable pmmaTable = new GwmsTestDataSet.pmmaDataTable();
+
+            int rowCount = pmmaTblAdapter.Fill(pmmaTable);
+
+            ExcelDb etb = new ExcelDb(pmmaTable);
+
+            etb.SaveToXls("D:\\百度云\\Project\\ImportExcelToDB\\ImportExcelToDB\\xls\\西伍商业决策分析系统_功能框架列表.xls", "dataTable");
         }
     }
 
@@ -79,7 +85,7 @@ namespace ImportExcelToDB
     {
         DataRowCollection getRows()
         {
-            return this.Rows;
+            return base.Rows;
         }
     }
 
@@ -109,7 +115,7 @@ namespace ImportExcelToDB
                 this._table.Rows.Add(newRow);
             }
 
-            return this.Adapter.Update(this._table);
+            return base.Adapter.Update(this._table);
         }
     }
 }
